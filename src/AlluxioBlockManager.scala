@@ -184,8 +184,12 @@ private[spark] class AlluxioBlockManager() extends ExternalBlockManager with Log
     }
     try {
       Some(blockManager.dataDeserializeStream(blockId, is))
-    } finally {
-      is.close()
+    } catch{
+      case NonFatal(e) =>
+        logWarning(s"Failed to get values of block $blockId from Alluxio", e)
+        None
+    }finally {
+      //is.close()
     }
   }
 
